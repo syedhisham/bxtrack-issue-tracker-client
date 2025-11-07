@@ -19,6 +19,7 @@ export const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
     // Sync cookie from localStorage for middleware (if token exists but cookie doesn't)
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
+      
       if (token) {
         // Check if cookie exists
         const cookies = document.cookie.split(";");

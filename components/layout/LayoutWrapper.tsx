@@ -19,12 +19,12 @@ export const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
     // Sync cookie from localStorage for middleware (if token exists but cookie doesn't)
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
-      
+
       if (token) {
         // Check if cookie exists
         const cookies = document.cookie.split(";");
         const hasTokenCookie = cookies.some((cookie) => cookie.trim().startsWith("token="));
-        
+         
         if (!hasTokenCookie) {
           // Set cookie for middleware to read
           const isSecure = window.location.protocol === "https:";

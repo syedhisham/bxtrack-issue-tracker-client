@@ -39,9 +39,15 @@ api.interceptors.response.use(
   (response: any) => response,
   (error: AxiosError<{ success: boolean; message: string }>) => {
     if (error.response?.status === 401) {
-      // Unauthorized - clear token and redirect to login
+      // Unauthorized - clear token and cookie, then redirect to login
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      
+      // Clear cookie for middleware
+      if (typeof document !== "undefined") {
+        document.cookie = "token=; path=/; max-age=0; SameSite=Lax";
+      }
+      
       if (typeof window !== "undefined") {
         window.location.href = "/sign-in";
       }

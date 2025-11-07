@@ -16,6 +16,23 @@ export const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
+    // Sync cookie from localStorage for middleware (if token exists but cookie doesn't)
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        // Check if cookie exists
+        const cookies = document.cookie.split(";");
+        const hasTokenCookie = cookies.some((cookie) => cookie.trim().startsWith("token="));
+        
+        if (!hasTokenCookie) {
+          // Set cookie for middleware to read
+          const isSecure = window.location.protocol === "https:";
+          const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
+          document.cookie = `token=${token}; path=/; max-age=${maxAge}; SameSite=Lax${isSecure ? "; Secure" : ""}`;
+        }
+      }
+    }
+    
     checkAuth();
     if (!isAuthenticated && typeof window !== "undefined") {
       const token = localStorage.getItem("token");

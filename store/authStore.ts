@@ -32,6 +32,13 @@ export const useAuthStore = create<AuthState>()(
           // Store token in localStorage for API client
           localStorage.setItem("token", token);
 
+          // Set cookie for middleware to read (same domain as frontend)
+          if (typeof document !== "undefined") {
+            const isSecure = window.location.protocol === "https:";
+            const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
+            document.cookie = `token=${token}; path=/; max-age=${maxAge}; SameSite=Lax${isSecure ? "; Secure" : ""}`;
+          }
+
           set({
             user,
             token,
@@ -51,6 +58,12 @@ export const useAuthStore = create<AuthState>()(
           console.error("Logout error:", error);
         } finally {
           localStorage.removeItem("token");
+          
+          // Clear cookie for middleware
+          if (typeof document !== "undefined") {
+            document.cookie = "token=; path=/; max-age=0; SameSite=Lax";
+          }
+          
           set({
             user: null,
             token: null,
@@ -65,6 +78,14 @@ export const useAuthStore = create<AuthState>()(
 
       setToken: (token: string) => {
         localStorage.setItem("token", token);
+        
+        // Set cookie for middleware to read
+        if (typeof document !== "undefined") {
+          const isSecure = window.location.protocol === "https:";
+          const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
+          document.cookie = `token=${token}; path=/; max-age=${maxAge}; SameSite=Lax${isSecure ? "; Secure" : ""}`;
+        }
+        
         set({ token, isAuthenticated: true });
       },
 

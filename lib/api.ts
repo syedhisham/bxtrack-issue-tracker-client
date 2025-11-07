@@ -8,6 +8,16 @@ import type {
   IssueSummary,
   PaginatedIssues,
 } from "@/types/issue";
+import type {
+  Comment,
+  CreateCommentDto,
+  UpdateCommentDto,
+  PaginatedComments,
+} from "@/types/comment";
+import type {
+  Notification,
+  PaginatedNotifications,
+} from "@/types/notification";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -132,6 +142,88 @@ export const issueAPI = {
 
     const response = await api.get<{ success: boolean; data: PaginatedIssues }>(
       `/issues/my-issues${params.toString() ? `?${params.toString()}` : ""}`
+    );
+    return response.data.data;
+  },
+
+  getMentionedIssues: async (filters?: Omit<IssueFilters, "assignee">): Promise<PaginatedIssues> => {
+    const params = new URLSearchParams();
+    if (filters?.status) params.append("status", filters.status);
+    if (filters?.priority) params.append("priority", filters.priority);
+    if (filters?.page) params.append("page", filters.page.toString());
+    if (filters?.limit) params.append("limit", filters.limit.toString());
+
+    const response = await api.get<{ success: boolean; data: PaginatedIssues }>(
+      `/issues/mentioned${params.toString() ? `?${params.toString()}` : ""}`
+    );
+    return response.data.data;
+  },
+};
+
+// Comment API
+export const commentAPI = {
+  getComments: async (issueId: string, page?: number, limit?: number): Promise<PaginatedComments> => {
+    const params = new URLSearchParams();
+    if (page) params.append("page", page.toString());
+    if (limit) params.append("limit", limit.toString());
+
+    const response = await api.get<{ success: boolean; data: PaginatedComments }>(
+      `/comments/issue/${issueId}${params.toString() ? `?${params.toString()}` : ""}`
+    );
+    return response.data.data;
+  },
+
+  createComment: async (data: CreateCommentDto): Promise<Comment> => {
+    const response = await api.post<{ success: boolean; message?: string; data: Comment }>(
+      "/comments",
+      {
+        content: data.content,
+        issue: data.issue,
+        mentions: data.mentions,
+      }
+    );
+    return response.data.data;
+  },
+
+  updateComment: async (id: string, data: UpdateCommentDto): Promise<Comment> => {
+    const response = await api.patch<{ success: boolean; message?: string; data: Comment }>(
+      `/comments/${id}`,
+      {
+        content: data.content,
+        mentions: data.mentions,
+      }
+    );
+    return response.data.data;
+  },
+
+  deleteComment: async (id: string): Promise<void> => {
+    await api.delete(`/comments/${id}`);
+  },
+};
+
+// Notification API
+export const notificationAPI = {
+  getNotifications: async (page?: number, limit?: number): Promise<PaginatedNotifications> => {
+    const params = new URLSearchParams();
+    if (page) params.append("page", page.toString());
+    if (limit) params.append("limit", limit.toString());
+
+    const response = await api.get<{ success: boolean; data: PaginatedNotifications }>(
+      `/notifications${params.toString() ? `?${params.toString()}` : ""}`
+    );
+    return response.data.data;
+  },
+
+  markAsRead: async (id: string): Promise<Notification> => {
+    const response = await api.patch<{ success: boolean; message?: string; data: Notification }>(
+      `/notifications/${id}/read`
+    );
+    return response.data.data;
+  },
+
+  markAllAsRead: async (): Promise<{ count: number }> => {
+    const response = await api.patch<{ success: boolean; message?: string; data: { count: number } }>(
+      "/notifications/read-all"
     );
     return response.data.data;
   },

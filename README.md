@@ -1,6 +1,6 @@
 # Issue Tracker Frontend
 
-A modern, responsive frontend application for a mini issue tracking system built with Next.js. This application provides an intuitive user interface for managing issues, with features including authentication, issue creation, filtering, pagination, and real-time updates.
+A modern, responsive frontend application for a mini issue tracking system built with Next.js. This application provides an intuitive user interface for managing issues, with features including authentication, issue creation, filtering, pagination, and real-time updates. Additionally, it includes bonus features for comment management and notification systems to enhance collaboration and activity tracking.
 
 ## Tech Stack
 
@@ -23,8 +23,12 @@ client/
 │   │   ├── issues/          # Issues pages
 │   │   │   ├── [id]/        # Issue detail page
 │   │   │   ├── my-issues/   # User's assigned issues
+│   │   │   ├── mentioned/   # Issues where user is mentioned
+│   │   │   ├── summary/     # Issue statistics and summary
 │   │   │   ├── new/         # Create issue page
 │   │   │   └── page.tsx     # Issues list page
+│   │   ├── notifications/   # Notifications page (bonus)
+│   │   │   └── page.tsx
 │   │   ├── layout.tsx       # Dashboard layout
 │   │   └── page.tsx         # Dashboard home
 │   ├── layout.tsx           # Root layout
@@ -39,9 +43,14 @@ client/
 │   │   ├── EmptyState.tsx
 │   │   ├── Input.tsx
 │   │   ├── LoadingSpinner.tsx
+│   │   ├── NotificationBell.tsx  # Notification bell component (bonus)
 │   │   ├── Pagination.tsx
 │   │   ├── Select.tsx
 │   │   └── UserSelect.tsx
+│   ├── comments/            # Comment components (bonus)
+│   │   ├── CommentInput.tsx
+│   │   ├── CommentItem.tsx
+│   │   └── CommentsSection.tsx
 │   ├── issues/              # Issue-specific components
 │   │   ├── IssueCard.tsx
 │   │   ├── IssueDetail.tsx
@@ -54,11 +63,14 @@ client/
 │       └── Sidebar.tsx
 ├── lib/
 │   ├── api.ts               # API client with interceptors
+│   ├── socket.ts            # Socket.io client (bonus - removed)
 │   └── utils.ts             # Utility functions
 ├── store/
 │   └── authStore.ts         # Zustand authentication store
 ├── types/
+│   ├── comment.ts           # Comment type definitions (bonus)
 │   ├── issue.ts             # Issue type definitions
+│   ├── notification.ts      # Notification type definitions (bonus)
 │   └── user.ts              # User type definitions
 ├── middleware.ts            # Next.js middleware for route protection
 └── tailwind.config.ts       # Tailwind CSS configuration
@@ -86,6 +98,23 @@ The frontend consumes the following backend API endpoints:
 - `GET /api/issues/:id` - Get a single issue by ID
 - `PATCH /api/issues/:id` - Update an issue (status, assignee, title, description, priority)
 
+### Bonus Features
+
+The following endpoints were implemented as bonus features to enhance collaboration and activity tracking:
+
+#### Comments (`/api/comments`)
+
+- `POST /api/comments` - Create a new comment on an issue
+- `GET /api/comments/issue/:issueId` - Get all comments for a specific issue
+- `PATCH /api/comments/:id` - Update a comment
+- `DELETE /api/comments/:id` - Delete a comment
+
+#### Notifications (`/api/notifications`)
+
+- `GET /api/notifications` - Get all notifications for the logged-in user (with pagination)
+- `PATCH /api/notifications/:id/read` - Mark a specific notification as read
+- `PATCH /api/notifications/read-all` - Mark all notifications as read
+
 ## Features
 
 ### Authentication
@@ -105,6 +134,25 @@ The frontend consumes the following backend API endpoints:
 - **Issue Details**: View full issue information with inline editing for status, assignee, and priority
 - **Empty States**: User-friendly empty states when no issues are found
 - **Loading States**: Professional loading spinners during data fetching
+
+### Bonus Features
+
+#### Comments & Activity
+
+- **Comment System**: Add comments to issues for better collaboration and activity tracking
+- **User Mentions**: Mention users in comments using `@username` syntax with visual highlighting
+- **Comment Management**: Full CRUD operations for comments (create, read, update, delete)
+- **Activity Tracking**: View all comments and activity on issue detail pages
+- **Real-time Updates**: Comments are displayed immediately after creation
+
+#### Notifications
+
+- **Notification Bell**: Notification bell icon in navbar with unread count badge
+- **Notification Center**: Dedicated notifications page with pagination (10 per page)
+- **Notification Types**: Receive notifications for issue creation, assignments, updates, status changes, priority changes, comments, and mentions
+- **Read/Unread Status**: Mark individual notifications or all notifications as read
+- **Notification Links**: Click notifications to navigate directly to related issues
+- **Unread Count**: Real-time unread notification count displayed in the notification bell
 
 ### UI/UX
 
@@ -177,6 +225,20 @@ Issue-specific components that handle business logic:
 - **IssueForm** - Create and edit issue form with validation
 - **IssueTable** - Desktop table view for issues list
 
+### Bonus Components
+
+#### Comment Components (`components/comments/`)
+
+Comment and activity tracking components (bonus feature):
+
+- **CommentInput** - Input component for creating new comments with mention support
+- **CommentItem** - Individual comment display with author info and actions
+- **CommentsSection** - Complete comments section with list and input
+
+#### Notification Components (`components/ui/`)
+
+- **NotificationBell** - Notification bell icon with dropdown and unread count badge (bonus feature)
+
 ### Layout Components (`components/layout/`)
 
 - **LayoutWrapper** - Main layout wrapper with sidebar and navbar
@@ -194,8 +256,14 @@ Issue-specific components that handle business logic:
 - **Home** (`/`) - Dashboard overview (redirects to issues)
 - **Issues List** (`/issues`) - All issues with filters and pagination
 - **My Issues** (`/issues/my-issues`) - Issues assigned to logged-in user
+- **Mentioned Issues** (`/issues/mentioned`) - Issues where user is mentioned in comments
+- **Issue Summary** (`/issues/summary`) - Issue statistics and summary dashboard
 - **Create Issue** (`/issues/new`) - Create new issue form
-- **Issue Detail** (`/issues/[id]`) - View and edit individual issue
+- **Issue Detail** (`/issues/[id]`) - View and edit individual issue with comments
+
+### Bonus Pages
+
+- **Notifications** (`/notifications`) - View and manage all notifications (bonus feature)
 
 ### Error Pages
 

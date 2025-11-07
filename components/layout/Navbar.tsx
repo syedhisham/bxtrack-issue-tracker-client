@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Menu, ChevronDown } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { Avatar } from "@/components/ui/Avatar";
+import { NotificationBell } from "@/components/ui/NotificationBell";
 import { cn } from "@/lib/utils";
 
 interface NavbarProps {
@@ -38,22 +39,27 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
 
         {/* Right: User menu */}
         {user && (
-          <div className="relative ml-auto">
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-surface transition-colors"
-            >
-              <Avatar src={user.profileImage} name={user.name} size="sm" />
-              <span className="hidden sm:block text-sm font-medium text-text-primary">
-                {user.name}
-              </span>
-              <ChevronDown
-                className={cn(
-                  "h-4 w-4 text-text-secondary transition-transform",
-                  isDropdownOpen && "rotate-180"
-                )}
-              />
-            </button>
+          <div className="flex items-center gap-2 ml-auto">
+            {/* Notification Bell */}
+            <NotificationBell />
+
+            {/* User Avatar Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-surface transition-colors"
+              >
+                <Avatar src={user.profileImage} name={user.name} size="sm" />
+                <span className="hidden sm:block text-sm font-medium text-text-primary">
+                  {user.name}
+                </span>
+                <ChevronDown
+                  className={cn(
+                    "h-4 w-4 text-text-secondary transition-transform",
+                    isDropdownOpen && "rotate-180"
+                  )}
+                />
+              </button>
 
             {/* Dropdown menu */}
             {isDropdownOpen && (
@@ -77,6 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
                 </div>
               </>
             )}
+            </div>
           </div>
         )}
       </div>

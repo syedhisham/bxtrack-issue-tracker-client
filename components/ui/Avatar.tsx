@@ -34,6 +34,7 @@ export const Avatar: React.FC<AvatarProps> = ({ src, alt, name, size = "md", cla
           src={src}
           alt={alt || name || "Avatar"}
           fill
+          sizes={size === "sm" ? "32px" : size === "lg" ? "48px" : "40px"}
           className="object-cover"
           onError={(e) => {
             // Fallback to initials if image fails to load

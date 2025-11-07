@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutList, Plus, X, LogOut, AtSign, ChartColumnBig } from "lucide-react";
+import { LayoutList, Plus, X, LogOut, AtSign, ChartColumnBig, FileUser, Bell } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { Avatar } from "@/components/ui/Avatar";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navigation = [
     { name: "Summary", href: "/issues/summary", icon: ChartColumnBig },
     { name: "Issues", href: "/issues", icon: LayoutList },
-    { name: "My Issues", href: "/issues/my-issues", icon: AtSign },
+    { name: "Assigned to Me", href: "/issues/my-issues", icon: FileUser },
+    { name: "Mentioned", href: "/issues/mentioned", icon: AtSign },
+    { name: "Notifications", href: "/notifications", icon: Bell },
     { name: "Create Issue", href: "/issues/new", icon: Plus },
   ];
 
@@ -72,11 +74,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   (pathname.startsWith("/issues/") &&
                     !pathname.startsWith("/issues/new") &&
                     !pathname.startsWith("/issues/my-issues") &&
+                    !pathname.startsWith("/issues/mentioned") &&
                     !pathname.startsWith("/issues/summary") &&
                     !!pathname.match(/^\/issues\/[^/]+$/)); // Only match /issues/[id] format
               } else if (item.href === "/issues/my-issues") {
                 // Active for /issues/my-issues
                 isActive = pathname === "/issues/my-issues";
+              } else if (item.href === "/issues/mentioned") {
+                // Active for /issues/mentioned
+                isActive = pathname === "/issues/mentioned";
               } else if (item.href === "/issues/summary") {
                 // Active for /issues/summary
                 isActive = pathname === "/issues/summary";

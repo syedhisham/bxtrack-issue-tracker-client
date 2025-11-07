@@ -12,6 +12,7 @@ import { Select } from "@/components/ui/Select";
 import { UserSelect } from "@/components/ui/UserSelect";
 import { Button } from "@/components/ui/Button";
 import { formatDateTime } from "@/lib/utils";
+import { CommentsSection } from "@/components/comments/CommentsSection";
 
 interface IssueDetailProps {
   issue: Issue;
@@ -336,6 +337,9 @@ export const IssueDetail: React.FC<IssueDetailProps> = ({ issue, onUpdate }) => 
           </div>
         </div>
       </Card>
+
+      {/* Comments Section */}
+      <CommentsSection issueId={issue._id} />
     </div>
   );
 };

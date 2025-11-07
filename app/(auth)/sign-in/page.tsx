@@ -74,7 +74,6 @@ export default function SignInPage() {
               setEmail(e.target.value);
               setError("");
             }}
-            error={error}
             disabled={isLoading}
             autoFocus
           />

@@ -12,7 +12,6 @@ import { Select } from "@/components/ui/Select";
 import { UserSelect } from "@/components/ui/UserSelect";
 import { Button } from "@/components/ui/Button";
 import { formatDateTime } from "@/lib/utils";
-import { cn } from "@/lib/utils";
 
 interface IssueDetailProps {
   issue: Issue;

@@ -2,17 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LogIn } from "lucide-react";
+import { LogIn, Users } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { IllustrationContainer } from "@/components/ui/IllustrationContainer";
+import { SeededUsersModal } from "@/components/auth/modals/SeededUsersModal";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { login, isAuthenticated } = useAuthStore();
   const router = useRouter();
 
@@ -95,9 +97,21 @@ export default function SignInPage() {
             </Button>
           </form>
 
-          <p className="mt-6 text-xs text-center text-text-secondary">
-            Use any email from the seeded users to sign in
-          </p>
+          <div className="mt-6 space-y-3">
+            <p className="text-xs text-center text-text-secondary">
+              Use any email from the seeded users to sign in
+            </p>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsModalOpen(true)}
+              className="w-full text-xs"
+            >
+              <Users className="h-4 w-4 mr-2" />
+              View Seeded Users
+            </Button>
+          </div>
 
           <div className="mt-4 p-3 rounded-lg bg-surface border border-border">
             <p className="text-xs text-text-secondary text-center">
@@ -115,6 +129,16 @@ export default function SignInPage() {
           </div>
         </Card>
       </div>
+
+      {/* Seeded Users Modal */}
+      <SeededUsersModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelectUser={(selectedEmail) => {
+          setEmail(selectedEmail);
+          setError("");
+        }}
+      />
     </div>
   );
 }
